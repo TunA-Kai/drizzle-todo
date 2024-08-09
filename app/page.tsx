@@ -1,14 +1,24 @@
-import { Button } from '~/components/ui/button'
+import { AddTodoSection } from '~/components/add-todo-section'
+import { TodoList } from '~/components/todo-list'
 import { db } from '~/drizzle/db'
 
 export default async function Home() {
-  const users = await db.query.users.findMany()
+  const tags = await db.query.tagsTable.findMany()
+  const users = await db.query.usersTable.findMany()
+  const todos = await db.query.todoTable.findMany({
+    columns: { id: true, content: true },
+    with: {
+      tag: { columns: { name: true } },
+      assign: { columns: { name: true } },
+    },
+  })
 
   return (
-    <>
-      <h1 className='text-3xl font-bold'>Hello</h1>
-      <Button>Button</Button>
-      <p>{JSON.stringify(users, null, 10)}</p>
-    </>
+    <div className='mx-auto max-w-5xl p-4'>
+      <p>Please add to-dos item(s) through the input field</p>
+      <AddTodoSection tags={tags} users={users} />
+
+      <TodoList todos={todos} />
+    </div>
   )
 }

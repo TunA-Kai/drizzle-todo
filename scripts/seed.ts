@@ -8,11 +8,29 @@ const db = drizzle(sqlite, { schema })
 async function main() {
   try {
     console.log('Seeding database...')
-    await db.delete(schema.users)
 
-    await db.insert(schema.users).values([
-      { name: 'Alice', age: 30, email: 'alice@gmail.com', role: 'ADMIN' },
-      { name: 'Bob', age: 25, email: 'bob@gmail.com' },
+    await db.insert(schema.usersTable).values([{ name: 'Alice' }, { name: 'Bob' }])
+
+    await db
+      .insert(schema.tagsTable)
+      .values([{ name: 'Drizzle ORM' }, { name: 'Next.js' }, { name: 'Tailwind CSS' }])
+
+    await db.insert(schema.todoTable).values([
+      {
+        content: 'Learn Drizzle ORM',
+        tagId: 1,
+        assignId: 1,
+      },
+      {
+        content: 'Learn Next.js',
+        tagId: 2,
+        assignId: 2,
+      },
+      {
+        content: 'Learn Tailwind CSS',
+        tagId: 3,
+        assignId: 1,
+      },
     ])
 
     console.log('Database seeded successfully!')
